@@ -1,3 +1,4 @@
+import Answers from "./components/Answers";
 import ProgressBar from "./components/ProgressBar";
 
 function App() {
@@ -5,6 +6,7 @@ function App() {
     <div id="quiz">
       <div id="question">
         <ProgressBar />
+        <Answers />
       </div>
     </div>
   );
