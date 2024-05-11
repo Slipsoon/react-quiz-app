@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 
-const TIMER = 3000;
+const TIMER = 10000;
 const TIMER_REFRESH = 10;
 
-export default function ProgressBar() {
+export default function ProgressBar({ answer }) {
   const [progressValue, setProgressValue] = useState(TIMER);
 
   useEffect(() => {
+    if (answer.timer) {
+      setProgressValue(answer.timer);
+    } else {
+      setProgressValue(TIMER);
+    }
+
     const progressInterval = setInterval(() => {
       setProgressValue((prevProgressValue) => {
         if (prevProgressValue <= 0) {
@@ -20,7 +26,13 @@ export default function ProgressBar() {
     return () => {
       clearInterval(progressInterval);
     };
-  }, []);
+  }, [answer]);
 
-  return <progress value={progressValue} max={TIMER}></progress>;
+  return (
+    <progress
+      className={answer.state === "selected" ? "answered" : ""}
+      value={progressValue}
+      max={answer.timer ? answer.timer : TIMER}
+    ></progress>
+  );
 }

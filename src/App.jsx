@@ -1,12 +1,13 @@
-import Answers from "./components/Answers";
-import ProgressBar from "./components/ProgressBar";
+import Questions from "./components/Questions.jsx";
+import QuestionsContextProvider from "./store/questions-cart-context";
 
 function App() {
   return (
     <div id="quiz">
       <div id="question">
-        <ProgressBar />
-        <Answers />
+        <QuestionsContextProvider>
+          <Questions />
+        </QuestionsContextProvider>
       </div>
     </div>
   );
