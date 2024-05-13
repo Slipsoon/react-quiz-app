@@ -3,14 +3,19 @@ import { useState, useEffect } from "react";
 const TIMER = 10000;
 const TIMER_REFRESH = 10;
 
-export default function ProgressBar({ answer }) {
+export default function ProgressBar({ answer, onAnswerTimeout }) {
   const [progressValue, setProgressValue] = useState(TIMER);
 
   useEffect(() => {
+    let answerTimeout;
+
     if (answer.timer) {
       setProgressValue(answer.timer);
     } else {
       setProgressValue(TIMER);
+      answerTimeout = setTimeout(() => {
+        onAnswerTimeout();
+      }, TIMER);
     }
 
     const progressInterval = setInterval(() => {
@@ -25,6 +30,7 @@ export default function ProgressBar({ answer }) {
 
     return () => {
       clearInterval(progressInterval);
+      clearTimeout(answerTimeout);
     };
   }, [answer]);
 

@@ -13,11 +13,12 @@ const CORRECT_ANSWERS = [
   },
   {
     id: "q3",
-    answer: "A JavaScript extension that adds HTML-like syntax to JavaScript.",
+    answer: "A specific HTML version that was explicitly created for React.",
   },
   {
     id: "q4",
-    answer: "What is the most common way to create a component in React?",
+    answer:
+      "By defining a JavaScript function that returns a renderable value.",
   },
   {
     id: "q5",
@@ -31,7 +32,7 @@ const CORRECT_ANSWERS = [
   },
   {
     id: "q7",
-    answer: "Which approach can NOT be used to render content conditionally?",
+    answer: "Using a the #if template syntax.",
   },
 ];
 
@@ -74,10 +75,7 @@ function questionReducer(state, action) {
         questionStatus: "",
       };
     } else {
-      return {
-        question: QUESTIONS[currentQuestionIndex],
-        questionStatus: "selected",
-      };
+      return { question: {}, questionStatus: "" };
     }
   }
 }
