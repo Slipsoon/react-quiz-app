@@ -16,11 +16,7 @@ function App() {
   }
 
   return (
-    <div id="quiz">
-      <div id="question">
-        <QuestionsContextProvider>{contentToDisplay}</QuestionsContextProvider>
-      </div>
-    </div>
+    <QuestionsContextProvider>{contentToDisplay}</QuestionsContextProvider>
   );
 }
 

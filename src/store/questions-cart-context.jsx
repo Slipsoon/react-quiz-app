@@ -39,6 +39,7 @@ const CORRECT_ANSWERS = [
 export const QuestionsContext = createContext({
   question: {},
   questionStatus: "",
+  summaryStats: [],
   answerQuestion: () => {},
   getNextQuestion: () => {},
 });
@@ -50,6 +51,21 @@ function questionReducer(state, action) {
   const currentQuestionIndex = QUESTIONS.indexOf(currentQuestionObj);
 
   if (action.type === "ANSWER") {
+    if (action.answer === undefined) {
+      return {
+        question: QUESTIONS[currentQuestionIndex],
+        questionStatus: "",
+        summaryStats: [
+          ...state.summaryStats,
+          {
+            question: state.question.text,
+            answer: undefined,
+            result: "skipped",
+          },
+        ],
+      };
+    }
+
     const isAnswerCorrect =
       CORRECT_ANSWERS.find(
         (correctAnswer) => correctAnswer.id === state.question.id
@@ -59,11 +75,27 @@ function questionReducer(state, action) {
       return {
         question: QUESTIONS[currentQuestionIndex],
         questionStatus: "correct",
+        summaryStats: [
+          ...state.summaryStats,
+          {
+            question: state.question.text,
+            answer: action.answer,
+            result: "correct",
+          },
+        ],
       };
     } else {
       return {
         question: QUESTIONS[currentQuestionIndex],
         questionStatus: "wrong",
+        summaryStats: [
+          ...state.summaryStats,
+          {
+            question: state.question.text,
+            answer: action.answer,
+            result: "wrong",
+          },
+        ],
       };
     }
   }
@@ -73,9 +105,14 @@ function questionReducer(state, action) {
       return {
         question: QUESTIONS[currentQuestionIndex + 1],
         questionStatus: "",
+        summaryStats: [...state.summaryStats],
       };
     } else {
-      return { question: {}, questionStatus: "" };
+      return {
+        question: {},
+        questionStatus: "",
+        summaryStats: [...state.summaryStats],
+      };
     }
   }
 }
@@ -84,6 +121,7 @@ export default function QuestionsContextProvider({ children }) {
   const [questionState, questionDispatch] = useReducer(questionReducer, {
     question: QUESTIONS[0],
     questionStatus: "",
+    summaryStats: [],
   });
 
   function handleAnswerQuestion(answer) {
@@ -100,8 +138,9 @@ export default function QuestionsContextProvider({ children }) {
   }
 
   const ctxValue = {
-    question: questionState,
-    questionStatus: "",
+    question: questionState.question,
+    questionStatus: questionState.questionStatus,
+    summaryStats: questionState.summaryStats,
     answerQuestion: handleAnswerQuestion,
     getNextQuestion: handleGetNextQuestion,
   };

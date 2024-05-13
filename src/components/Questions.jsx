@@ -6,23 +6,23 @@ const ANSWER_TIMER = 1000;
 const NEXT_QUESTION_TIMER = 3000;
 
 export default function Questions({ onSummaryDisplay }) {
-  const { question, answerQuestion, getNextQuestion } =
+  const { question, questionStatus, answerQuestion, getNextQuestion } =
     useContext(QuestionsContext);
   const [answerState, setAnswerState] = useState({});
 
   useEffect(() => {
-    if (question.question.id === undefined) {
+    if (question.id === undefined) {
       onSummaryDisplay();
-    } else if (question.questionStatus) {
+    } else if (questionStatus) {
       setAnswerState((prevAnswerState) => {
         return {
           timer: NEXT_QUESTION_TIMER,
-          state: question.questionStatus,
+          state: questionStatus,
           answer: prevAnswerState.answer,
         };
       });
     }
-  }, [question]);
+  }, [question, questionStatus]);
 
   function handleAnswer(answer) {
     if (answer) {
@@ -43,6 +43,7 @@ export default function Questions({ onSummaryDisplay }) {
         setAnswerState({});
       }, ANSWER_TIMER + NEXT_QUESTION_TIMER);
     } else {
+      answerQuestion(undefined);
       getNextQuestion();
       setAnswerState({});
     }
@@ -50,26 +51,28 @@ export default function Questions({ onSummaryDisplay }) {
 
   return (
     <>
-      {question.question.id && (
-        <>
-          <ProgressBar answer={answerState} onAnswerTimeout={handleAnswer} />
-          <h2>{question.question.text}</h2>
-          <div id="answers">
-            {question.question.answers.map((answer) => (
-              <div key={answer} className="answer">
-                <button
-                  disabled={answerState.state}
-                  className={
-                    answerState.answer === answer ? answerState.state : ""
-                  }
-                  onClick={() => handleAnswer(answer)}
-                >
-                  {answer}
-                </button>
-              </div>
-            ))}
+      {question.id && (
+        <div id="quiz">
+          <div id="question">
+            <ProgressBar answer={answerState} onAnswerTimeout={handleAnswer} />
+            <h2>{question.text}</h2>
+            <div id="answers">
+              {question.answers.map((answer) => (
+                <div key={answer} className="answer">
+                  <button
+                    disabled={answerState.state}
+                    className={
+                      answerState.answer === answer ? answerState.state : ""
+                    }
+                    onClick={() => handleAnswer(answer)}
+                  >
+                    {answer}
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );
